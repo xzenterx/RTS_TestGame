@@ -1,19 +1,26 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Models;
 
 namespace Application.Buildings
 {
-    public class Portal
+    public class Portal : Building
     {
+
         public int Level { get; private set; } = 1;
         public float BuyGoodsRate { get; private set; } = 1.5f;
         public float SellGoodsRate { get; private set; } = 0.5f;
         public float ProductionLoansPercent { get; private set; }
         public float ProductionGoodsPercent { get; private set; }
 
-        public void LevelUp()
+        public Portal()
         {
-            Level += 1;
+            Level = 1;
+        }
+
+        public override void LevelUp()
+        {
+            Level ++;
             ProductionLoansPercent += 0.0025f;
             ProductionLoansPercent += 0.0025f;
 
@@ -26,40 +33,40 @@ namespace Application.Buildings
                 SellGoodsRate += diffPercent;
         }
 
-        public void BuyGoods(int countGoods, ref float goods, ref float loans)
+        public void BuyGoods(int countGoods, PlayerResources playerResources)
         {
             string msg = null;
 
             float needLoans = countGoods * BuyGoodsRate;
 
-            if (needLoans > loans)
+            if (needLoans > playerResources.Loans)
             {
                 msg = "Not enough loans";
                 Debug.Log(msg);
             }
             else
             {
-                loans -= needLoans;
-                goods += countGoods;
+                playerResources.Loans -= needLoans;
+                playerResources.Goods += countGoods;
 
                 msg = "The purchase is successful";
                 Debug.Log(msg);
             }
         }
 
-        public void SellGoods(int countGoods, ref float goods, ref float loans)
+        public void SellGoods(int countGoods, PlayerResources playerResources)
         {
             string msg = null;
 
-            if (countGoods > goods)
+            if (countGoods > playerResources.Goods)
             {
                 msg = "Not enough goods";
                 Debug.Log(msg);
             }
             else
             {
-                loans += countGoods * SellGoodsRate;
-                goods -= countGoods;
+                playerResources.Loans += countGoods * SellGoodsRate;
+                playerResources.Goods -= countGoods;
 
                 msg = "Sale successful";
                 Debug.Log(msg);

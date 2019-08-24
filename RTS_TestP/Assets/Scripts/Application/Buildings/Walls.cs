@@ -3,14 +3,18 @@ using System.Collections;
 
 namespace Application.Buildings
 {
-    public class Walls
+    public class Walls : Building
     {
-        public int Level { get; private set; } = 1;
         public float DefenseUnitsBase { get; private set; }
 
-        public void LevelUp()
+        public Walls()
         {
-            Level += 1;
+            Level = 1;
+        }
+
+        public override void LevelUp()
+        {
+            Level++;
             DefenseUnitsBase += 0.05f;
         }
 

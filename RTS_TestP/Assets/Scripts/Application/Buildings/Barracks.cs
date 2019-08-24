@@ -6,20 +6,24 @@ using Application.Units.Fabrics;
 
 namespace Application.Buildings
 {
-    public class Barracks
+    public class Barracks : Building
     {
-        public int Level { get; private set; } = 1;
         public int LimitUnits { get; private set; } = 300;
 
-        public void LevelUp()
+        public Barracks()
         {
-            Level += 1;
+            Level = 1;
+        }
+
+        public override void LevelUp()
+        {
+            Level++;
             LimitUnits += 100;
         }
 
-        public void LimitUp(int limit)
+        public void LimitUp()
         {
-            LimitUnits += limit;
+            LimitUnits += 200;
         }
 
         public bool CheckPesourcesForCreateUnit(PlayerResources playerResources, int countUnit)
