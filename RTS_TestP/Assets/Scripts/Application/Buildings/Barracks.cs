@@ -7,11 +7,12 @@ using Application.Units.Fabrics;
 namespace Application.Buildings
 {
     public class Barracks : Building
-    {
+    {   
         public int LimitUnits { get; private set; } = 300;
 
         public Barracks()
         {
+            Name = "Барраки";
             Level = 1;
         }
 
@@ -40,7 +41,6 @@ namespace Application.Buildings
             }
         }
 
-
         public void BuyUnits(PlayerResources playerResources, int countUnit)
         {
             playerResources.People -= countUnit;
@@ -52,5 +52,6 @@ namespace Application.Buildings
         {
             return unitFabric.Create();
         }
+        
     }
 }

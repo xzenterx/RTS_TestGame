@@ -14,11 +14,15 @@ public class GenerateMap : MonoBehaviour
 
     public GameObject BaseObj;
 
-
-    private void Start()
+    private void Awake()
     {
         GenerateGrass();
         CreateBasePosition();
+    }
+
+    private void Start()
+    {
+        
     }
 
     private void GenerateGrass()
@@ -39,8 +43,8 @@ public class GenerateMap : MonoBehaviour
 
     private void CreateBasePosition()
     {
-        float posX = 0f;
-        float posY = 0f;
+        float posX;
+        float posY;
 
         posX = Random.Range(0, SizeX - 1) + 0.5f;
         posY = Random.Range(0, SizeY - 1) + 0.5f;

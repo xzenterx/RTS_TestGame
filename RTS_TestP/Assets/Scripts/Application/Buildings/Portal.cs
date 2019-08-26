@@ -6,8 +6,6 @@ namespace Application.Buildings
 {
     public class Portal : Building
     {
-
-        public int Level { get; private set; } = 1;
         public float BuyGoodsRate { get; private set; } = 1.5f;
         public float SellGoodsRate { get; private set; } = 0.5f;
         public float ProductionLoansPercent { get; private set; }
@@ -15,6 +13,7 @@ namespace Application.Buildings
 
         public Portal()
         {
+            Name = "Портал";
             Level = 1;
         }
 

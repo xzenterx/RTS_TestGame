@@ -13,6 +13,7 @@ namespace Application.Buildings
 
         public ResidentialModule()
         {
+            Name = "Жилой модуль";
             Level = 1;
         }
 

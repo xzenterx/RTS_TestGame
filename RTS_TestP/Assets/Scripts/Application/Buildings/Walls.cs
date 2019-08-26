@@ -9,6 +9,7 @@ namespace Application.Buildings
 
         public Walls()
         {
+            Name = "Стена";
             Level = 1;
         }
 

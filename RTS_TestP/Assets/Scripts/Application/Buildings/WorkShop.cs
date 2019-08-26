@@ -11,6 +11,7 @@ namespace Application.Buildings
         
         public WorkShop()
         {
+            Name = "Цех";
             Level = 1;
         }
 

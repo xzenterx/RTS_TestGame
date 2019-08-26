@@ -11,16 +11,15 @@ using Application.Units.Fabrics;
 
 public class BaseScript : MonoBehaviour
 {
+    public GameObject spriteBase;
 
-    public Sprite spriteBase;
-
-    private PlayerResources playerResources = new PlayerResources();
-    private List<ResidentialModule> residentialModuleList = new List<ResidentialModule>();
-    private List<WorkShop> workShopList = new List<WorkShop>();
-    private Portal portal = new Portal();
-    private Barracks barracks = new Barracks();
-    private Walls walls = new Walls();
-    private Production production = new Production();
+    public PlayerResources playerResources = new PlayerResources();
+    public List<ResidentialModule> residentialModuleList = new List<ResidentialModule>();
+    public List<WorkShop> workShopList = new List<WorkShop>();
+    public Portal portal = new Portal();
+    public Barracks barracks = new Barracks();
+    public Walls walls = new Walls();
+    public Production production = new Production();
 
     private List<Unit> unitAttacks = new List<Unit>();
     private List<Unit> unitDefense = new List<Unit>();
@@ -29,23 +28,30 @@ public class BaseScript : MonoBehaviour
     private bool IsTraining = false;
     private UnityEvent ChangingUnitsSpot = new UnityEvent();
 
+    public UnityEvent ChangingResources = new UnityEvent();
+
     private void Awake()
     {
-        residentialModuleList.Add(new ResidentialModule());
-        workShopList.Add(new WorkShop());
+        if (residentialModuleList.Count == 0)
+        {
+            InitModuls();
+        }
     }
 
-    private void Start()
+    public void Start()
     {
-        ChangingUnitsSpot.AddListener(UnitsOnBase);  
+        
+
+        ChangingUnitsSpot.AddListener(UnitsOnBase);
     }
 
     public void GameStep()
     {
-        foreach (ResidentialModule residentialModule in residentialModuleList)
-        {
-            production.ProductionPeople(residentialModule, playerResources);
-        }
+
+        Debug.Log(residentialModuleList.Count);
+
+
+        production.ProductionPeople(residentialModuleList, playerResources);
 
         foreach (WorkShop workShop in workShopList)
         {
@@ -53,6 +59,15 @@ public class BaseScript : MonoBehaviour
         }
 
         production.ProductionLoans(portal, playerResources);
+        
+        ChangingResources.Invoke();
+
+    }
+
+    private void InitModuls()
+    {
+        residentialModuleList.Add(new ResidentialModule());
+        workShopList.Add(new WorkShop());
     }
 
     public void CreateUnit(int countUnitsAttacks, int countUnitsDefense, int countUnitsSpeed)
@@ -125,17 +140,17 @@ public class BaseScript : MonoBehaviour
         }
     }
 
-    public void BuyLevelUpBuildings<T>(T building,int level)
+    public void BuyLevelUpBuildings(Building building)
     {
-        int cost = Convert.ToInt32(100 + (level + 1) / 0.985f);
+        int cost = Convert.ToInt32(100 + (building.Level + 1) / 0.985f);
 
         if (playerResources.Goods >= cost && playerResources.Loans >= cost)
         {
             playerResources.Goods -= cost;
             playerResources.Loans -= cost;
+            building.LevelUp();
         }
-
-        //building.LevelUp();
+        
     }
 
     public void BaseExpansion()
@@ -151,19 +166,21 @@ public class BaseScript : MonoBehaviour
             residentialModuleList.Add(new ResidentialModule());
             workShopList.Add(new WorkShop());
 
-            barracks.LimitUp(200);
+            barracks.LimitUp();
             walls.LevelDown();
         }
     }
 
     private void BaseExpansionBlock()
     {
-        Vector2 newBasePos = new Vector2();
+        Vector3 newBasePos;
 
-        newBasePos.x = gameObject.transform.position.x;
-        newBasePos.y = gameObject.transform.position.y + 1;
+        newBasePos.x = gameObject.transform.position.x + UnityEngine.Random.Range(-1,1);
+        newBasePos.y = gameObject.transform.position.y + UnityEngine.Random.Range(-1, 1);
+        newBasePos.z = 0;
 
-        Instantiate(spriteBase, newBasePos, Quaternion.identity);
+        GameObject obj = Instantiate(spriteBase, newBasePos, Quaternion.identity);
+        obj.transform.position = newBasePos;
     }
     
 }

@@ -3,17 +3,31 @@ using System;
 using System.Collections;
 using Models;
 using Application.Buildings;
+using System.Collections.Generic;
 
 namespace Application
 {
     public class Production
     {
-        public void ProductionPeople(ResidentialModule residentialModule, PlayerResources playerResources)
+        public void ProductionPeople(List<ResidentialModule> residentialModuleList, PlayerResources playerResources)
         {
-            if (playerResources.People < residentialModule.LimitBase)
+
+            int limitBase = 0;
+
+            foreach (ResidentialModule residentialModule in residentialModuleList)
             {
-                playerResources.People += residentialModule.EveryGSPopulation + Convert.ToInt32(residentialModule.EveryGSPopulation * residentialModule.PopulationGrowthPercent);
+                limitBase += residentialModule.LimitBase;
             }
+
+            foreach (ResidentialModule residentialModule in residentialModuleList)
+            {
+                if (playerResources.People < limitBase)
+                {
+                    playerResources.People += residentialModule.EveryGSPopulation + Convert.ToInt32(residentialModule.EveryGSPopulation * residentialModule.PopulationGrowthPercent);
+                }
+            }
+
+
             Debug.Log("People: " + playerResources.People);
         }
 
