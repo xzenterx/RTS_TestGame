@@ -25,31 +25,23 @@ public class BaseScript : MonoBehaviour
     private List<Unit> unitDefense = new List<Unit>();
     private List<Unit> unitSpeed = new List<Unit>();
 
-    private bool IsTraining = false;
     private UnityEvent ChangingUnitsSpot = new UnityEvent();
 
     public UnityEvent ChangingResources = new UnityEvent();
+    public UnityEvent ChangingLevelBuildingEvent = new UnityEvent();
 
     private void Awake()
     {
-        if (residentialModuleList.Count == 0)
-        {
-            InitModuls();
-        }
+        if (residentialModuleList.Count == 0) InitModuls();
     }
 
     public void Start()
     {
-        
-
         ChangingUnitsSpot.AddListener(UnitsOnBase);
     }
 
     public void GameStep()
     {
-
-        Debug.Log(residentialModuleList.Count);
-
 
         production.ProductionPeople(residentialModuleList, playerResources);
 
@@ -59,7 +51,7 @@ public class BaseScript : MonoBehaviour
         }
 
         production.ProductionLoans(portal, playerResources);
-        
+
         ChangingResources.Invoke();
 
     }
@@ -149,8 +141,9 @@ public class BaseScript : MonoBehaviour
             playerResources.Goods -= cost;
             playerResources.Loans -= cost;
             building.LevelUp();
+            ChangingLevelBuildingEvent.Invoke();
         }
-        
+
     }
 
     public void BaseExpansion()
@@ -168,6 +161,8 @@ public class BaseScript : MonoBehaviour
 
             barracks.LimitUp();
             walls.LevelDown();
+
+            ChangingLevelBuildingEvent.Invoke();
         }
     }
 
@@ -175,12 +170,12 @@ public class BaseScript : MonoBehaviour
     {
         Vector3 newBasePos;
 
-        newBasePos.x = gameObject.transform.position.x + UnityEngine.Random.Range(-1,1);
+        newBasePos.x = gameObject.transform.position.x + UnityEngine.Random.Range(-1, 1);
         newBasePos.y = gameObject.transform.position.y + UnityEngine.Random.Range(-1, 1);
         newBasePos.z = 0;
 
         GameObject obj = Instantiate(spriteBase, newBasePos, Quaternion.identity);
         obj.transform.position = newBasePos;
     }
-    
+
 }

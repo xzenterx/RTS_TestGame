@@ -8,22 +8,27 @@ public class UIManagement : MonoBehaviour
 
     private BaseScript baseScriptPlayer;
 
-    public GameObject panelBuilding;
+    public GameObject panelBuildingPrefab;
     public Button buttonMenuBuildings;
     public GameObject menuBuildings;
 
-    public GameObject ContentListBuildindings;
+    public GameObject ContentListBuildings;
 
     public Text textPeople;
     public Text textGoods;
     public Text textLoans;
 
+    private List<GameObject> panelBuildingsList = new List<GameObject>();
+
+    private bool firstCreate = true;
+
     private void Start()
     {
         baseScriptPlayer = GameObject.FindGameObjectWithTag("Player").GetComponent<BaseScript>();
         ShowResourcesInfo();
+        CreateBuildingsList();
         baseScriptPlayer.ChangingResources.AddListener(ShowResourcesInfo);
-        ShowBuildingsList();
+        baseScriptPlayer.ChangingLevelBuildingEvent.AddListener((CreateBuildingsList));
     }
 
     public void ShowHideMenuBuildings()
@@ -43,22 +48,33 @@ public class UIManagement : MonoBehaviour
         baseScriptPlayer.BaseExpansion();
     }
 
-    public void ShowBuildingsList()
+    private void DestroyBuildingList()
     {
-        
-        List<Building> buildings = new List<Building>();
-        buildings.Add(baseScriptPlayer.portal);
-        buildings.Add(baseScriptPlayer.walls);
-        buildings.Add(baseScriptPlayer.barracks);
+        foreach (GameObject building in panelBuildingsList)
+        {
+            Destroy(building);
+        }
+    }
 
-        float y = -100;
+    private void GenerateBuildingsList(Vector3 position)
+    {
+        int y = 0;
+
+        List<Building> buildings = new List<Building>
+        {
+            baseScriptPlayer.portal,
+            baseScriptPlayer.walls,
+            baseScriptPlayer.barracks
+        };
+
 
         foreach (Building building in buildings)
         {
-            GameObject obj = Instantiate(panelBuilding, ContentListBuildindings.transform);
-            obj.transform.SetParent(ContentListBuildindings.transform);
+            GameObject obj = Instantiate(panelBuildingPrefab, ContentListBuildings.transform);
+            obj.transform.SetParent(ContentListBuildings.transform);
 
-            obj.transform.localPosition = new Vector3(0, y, 0);
+            obj.transform.localPosition = position;
+
 
             Text text = obj.GetComponentInChildren<Text>();
             Button button = obj.GetComponentInChildren<Button>();
@@ -70,15 +86,19 @@ public class UIManagement : MonoBehaviour
                 baseScriptPlayer.BuyLevelUpBuildings(building);
             });
 
-            y -= 80;
+            panelBuildingsList.Add(obj);
+
+
+
+            position.y -= 80;
         }
 
         foreach (ResidentialModule residentialModule in baseScriptPlayer.residentialModuleList)
         {
-            GameObject obj = Instantiate(panelBuilding, ContentListBuildindings.transform);
-            obj.transform.SetParent(ContentListBuildindings.transform);
+            GameObject obj = Instantiate(panelBuildingPrefab, ContentListBuildings.transform);
+            obj.transform.SetParent(ContentListBuildings.transform);
 
-            obj.transform.localPosition = new Vector3(0, y, 0);
+            obj.transform.localPosition = position;
 
             Text text = obj.GetComponentInChildren<Text>();
             Button button = obj.GetComponentInChildren<Button>();
@@ -90,15 +110,17 @@ public class UIManagement : MonoBehaviour
                 baseScriptPlayer.BuyLevelUpBuildings(residentialModule);
             });
 
-            y -= 80;
+            panelBuildingsList.Add(obj);
+
+            position.y -= 80;
         }
 
         foreach (WorkShop workShop in baseScriptPlayer.workShopList)
         {
-            GameObject obj = Instantiate(panelBuilding, ContentListBuildindings.transform);
-            obj.transform.SetParent(ContentListBuildindings.transform);
+            GameObject obj = Instantiate(panelBuildingPrefab, ContentListBuildings.transform);
+            obj.transform.SetParent(ContentListBuildings.transform);
 
-            obj.transform.localPosition = new Vector3(0, y, 0);
+            obj.transform.localPosition = position;
 
             Text text = obj.GetComponentInChildren<Text>();
             Button button = obj.GetComponentInChildren<Button>();
@@ -110,11 +132,35 @@ public class UIManagement : MonoBehaviour
                 baseScriptPlayer.BuyLevelUpBuildings(workShop);
             });
 
-            y -= 80;
-        }
+            panelBuildingsList.Add(obj);
 
+            position.y -= 80;
+        }
     }
 
+    public void CreateBuildingsList()
+    {
 
+        DestroyBuildingList();
+
+        Vector3 position;
+        if (!firstCreate)
+        {
+            position.x = 143;
+            position.y = -100;
+            position.z = 0;
+        }
+        else
+        {
+            position.x = 0;
+            position.y = -100;
+            position.z = 0;
+        }
+
+
+        GenerateBuildingsList(position);
+
+        firstCreate = false;
+    }
 
 }
