@@ -21,9 +21,9 @@ public class BaseScript : MonoBehaviour
     public Walls walls = new Walls();
     public Production production = new Production();
 
-    private List<Unit> unitAttacks = new List<Unit>();
-    private List<Unit> unitDefense = new List<Unit>();
-    private List<Unit> unitSpeed = new List<Unit>();
+    public List<Unit> unitAttacks = new List<Unit>();
+    public List<Unit> unitDefense = new List<Unit>();
+    public List<Unit> unitSpeed = new List<Unit>();
 
     private UnityEvent ChangingUnitsSpot = new UnityEvent();
 
