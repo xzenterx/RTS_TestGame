@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Models.Units;
+using System;
 
 public class UIManagement : MonoBehaviour
 {
@@ -25,6 +26,14 @@ public class UIManagement : MonoBehaviour
     public Text textGoods;
     public Text textLoans;
 
+    public Text countUnitsAttack;
+    public Text countUnitsDefense;
+    public Text countUnitsSpeed;
+
+    public InputField inputUnitsAttack;
+    public InputField inputUnitsDefense;
+    public InputField inputUnitsSpeed;
+
     private List<GameObject> panelBuildingsList = new List<GameObject>();
     private List<GameObject> panelUnitsList = new List<GameObject>();
 
@@ -34,11 +43,13 @@ public class UIManagement : MonoBehaviour
     private void Start()
     {
         baseScriptPlayer = GameObject.FindGameObjectWithTag("Player").GetComponent<BaseScript>();
+
         ShowResourcesInfo();
         CreateBuildingsList();
-        CreateUnitsList();
+
         baseScriptPlayer.ChangingResources.AddListener(ShowResourcesInfo);
-        baseScriptPlayer.ChangingLevelBuildingEvent.AddListener((CreateBuildingsList));
+        baseScriptPlayer.ChangingLevelBuildingEvent.AddListener(CreateBuildingsList);
+        baseScriptPlayer.ChangingUnitsCountEvent.AddListener(ShowCountUnits);
     }
 
     public void ShowHideMenuBuildings()
@@ -80,7 +91,6 @@ public class UIManagement : MonoBehaviour
         foreach (Building building in buildings)
         {
             GameObject panelBuilding = Instantiate(panelBuildingPrefab, ContentListBuildings.transform);
-            //panelBuilding.transform.SetParent(ContentListBuildings.transform);
 
             panelBuilding.transform.localPosition = position;
 
@@ -105,7 +115,6 @@ public class UIManagement : MonoBehaviour
         foreach (ResidentialModule residentialModule in baseScriptPlayer.residentialModuleList)
         {
             GameObject panelBuilding = Instantiate(panelBuildingPrefab, ContentListBuildings.transform);
-            //panelBuilding.transform.SetParent(ContentListBuildings.transform);
 
             panelBuilding.transform.localPosition = position;
 
@@ -127,7 +136,6 @@ public class UIManagement : MonoBehaviour
         foreach (WorkShop workShop in baseScriptPlayer.workShopList)
         {
             GameObject panelBuilding = Instantiate(panelBuildingPrefab, ContentListBuildings.transform);
-            //panelBuilding.transform.SetParent(ContentListBuildings.transform);
 
             panelBuilding.transform.localPosition = position;
 
@@ -177,80 +185,28 @@ public class UIManagement : MonoBehaviour
         menuUnits.SetActive(!menuUnits.activeSelf);
     }
 
-    private void CreateUnitsList()
+    public void TrainingAttackUnit()
     {
-
-        string[] names = new string[] {"Юниты Атаки", "Юниты Защиты", "Юниты Скорости"};
-
-        Vector3 position;
-        position.x = 0;
-        position.y = -70;
-        position.z = 0;
-
-        {
-            GameObject panelUnitAttack = Instantiate(panelUnitPrefab, ContentListUnits.transform);
-            panelUnitAttack.transform.SetParent(ContentListUnits.transform);
-
-            panelUnitAttack.transform.localPosition = position;
-
-            Text text = panelUnitAttack.GetComponentInChildren<Text>();
-            Button button = panelUnitAttack.GetComponentInChildren<Button>();
-
-            text.text = names[0] + "\n" + "Кол-во: " + baseScriptPlayer.unitAttacks.Count;
-
-            /*button.onClick.AddListener(() =>
-            {
-                baseScriptPlayer.BuyLevelUpBuildings(workShop);
-            });*/
-
-            panelUnitsList.Add(panelUnitAttack);
-
-            position.y -= 80;
-
-        }
-
-        {
-            GameObject panelUnitDefense = Instantiate(panelUnitPrefab, ContentListUnits.transform);
-            panelUnitDefense.transform.SetParent(ContentListUnits.transform);
-
-            panelUnitDefense.transform.localPosition = position;
-
-            Text text = panelUnitDefense.GetComponentInChildren<Text>();
-            Button button = panelUnitDefense.GetComponentInChildren<Button>();
-
-            text.text = names[1] + "\n" + "Кол-во: " + baseScriptPlayer.unitDefense.Count;
-
-            /*button.onClick.AddListener(() =>
-            {
-                baseScriptPlayer.BuyLevelUpBuildings(workShop);
-            });*/
-
-            panelUnitsList.Add(panelUnitDefense);
-
-            position.y -= 80;
-        }
-
-        {
-            GameObject panelUnitSpeed = Instantiate(panelUnitPrefab, ContentListUnits.transform);
-            panelUnitSpeed.transform.SetParent(ContentListUnits.transform);
-
-            panelUnitSpeed.transform.localPosition = position;
-
-            Text text = panelUnitSpeed.GetComponentInChildren<Text>();
-            Button button = panelUnitSpeed.GetComponentInChildren<Button>();
-
-            text.text = names[0] + "\n" + "Кол-во: " + baseScriptPlayer.unitSpeed.Count;
-
-            /*button.onClick.AddListener(() =>
-            {
-                baseScriptPlayer.BuyLevelUpBuildings(workShop);
-            });*/
-
-            panelUnitsList.Add(panelUnitSpeed);
-
-            position.y -= 80;
-        }
-
+        baseScriptPlayer.CreateUnit(Convert.ToInt32(inputUnitsAttack.text), 0, 0);
+        inputUnitsAttack.text = "";
     }
 
+    public void TrainingDefenseUnit()
+    {
+        baseScriptPlayer.CreateUnit(0, Convert.ToInt32(inputUnitsDefense.text), 0);
+        inputUnitsDefense.text = "";
+    }
+
+    public void TrainingSpeedUnit()
+    {
+        baseScriptPlayer.CreateUnit(0, 0, Convert.ToInt32(inputUnitsSpeed.text));
+        inputUnitsSpeed.text = "";
+    }
+
+    public void ShowCountUnits()
+    {
+        countUnitsAttack.text = "Кол-во: " + baseScriptPlayer.unitAttacks.Count;
+        countUnitsDefense.text = "Кол-во: " + baseScriptPlayer.unitDefense.Count;
+        countUnitsSpeed.text = "Кол-во: " + baseScriptPlayer.unitSpeed.Count;
+    }
 }

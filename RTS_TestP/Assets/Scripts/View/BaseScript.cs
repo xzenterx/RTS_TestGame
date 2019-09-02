@@ -29,6 +29,7 @@ public class BaseScript : MonoBehaviour
 
     public UnityEvent ChangingResources = new UnityEvent();
     public UnityEvent ChangingLevelBuildingEvent = new UnityEvent();
+    public UnityEvent ChangingUnitsCountEvent = new UnityEvent();
 
     private void Awake()
     {
@@ -66,6 +67,7 @@ public class BaseScript : MonoBehaviour
     {
         if (countUnitsAttacks > 0 && barracks.CheckPesourcesForCreateUnit(playerResources, countUnitsAttacks))
         {
+            
             for (int i = 0; i < countUnitsAttacks; i++)
             {
                 unitAttacks.Add(barracks.CreateUnit(new UnitAttackFactory()));
@@ -90,7 +92,9 @@ public class BaseScript : MonoBehaviour
             }
             barracks.BuyUnits(playerResources, countUnitsSpeed);
         }
+
         ChangingUnitsSpot.Invoke();
+        ChangingUnitsCountEvent.Invoke();
     }
 
     public void UnitsOnBase()

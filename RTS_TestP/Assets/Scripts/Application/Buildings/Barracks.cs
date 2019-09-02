@@ -29,9 +29,9 @@ namespace Application.Buildings
 
         public bool CheckPesourcesForCreateUnit(PlayerResources playerResources, int countUnit)
         {
-            if (playerResources.People * countUnit <= playerResources.People &&
-                playerResources.Goods * countUnit <= playerResources.Goods &&
-                playerResources.Loans * countUnit <= playerResources.Loans)
+            if (countUnit <= playerResources.People &&
+                10 * countUnit <= playerResources.Goods &&
+                10 * countUnit <= playerResources.Loans)
             {
                 return true;
             }
@@ -44,8 +44,8 @@ namespace Application.Buildings
         public void BuyUnits(PlayerResources playerResources, int countUnit)
         {
             playerResources.People -= countUnit;
-            playerResources.Loans -= playerResources.Loans * 10;
-            playerResources.Goods -= playerResources.Goods * 10;
+            playerResources.Loans -= countUnit * 10;
+            playerResources.Goods -= countUnit * 10;
         }
 
         public Unit CreateUnit(IUnitFabric unitFabric)

@@ -9,7 +9,7 @@ public class CameraMouse : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.P))
         {
             fixCamera = !fixCamera;
         }
